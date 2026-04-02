@@ -29,6 +29,16 @@ Some prompts to answer:
 
 You can include a simple diagram or bullet list if helpful.
 
+Real-world recommendation engines are built in layers separated into different models, profile data, validations, and signals. They gather user behavior (listens, skips, likes), item attributes (genre, mood, energy, tempo), and context (time of day, session type), then compute a relevance score for each candidate and sort to create a final ranked list. They rely on both collaborative signals (what similar listeners enjoyed) and content signals (how close songs are to a user’s taste profile), with additional business/risk rules for diversity and freshness. 
+
+My version is a simple content-based system that prioritizes closeness to user preference in musical vibe like alignment to their personalization.
+Features: genres, moods, energy, valence, danceability, acousticness, tempo_bpm 
+1. Input user vibe → profile info based on recent listening styles, vibe values, user favorites based on past history
+2. Song system based on genre, mood, and vibe (song signals)
+3. Weighted sum (convert features based on user profile into numbers and make comparisons); want distance to user target (how close these values are to user preferences) → ranking and filter -> song score 
+4. Rank songs by score → show top picks 
+
+
 ---
 
 ## Getting Started
