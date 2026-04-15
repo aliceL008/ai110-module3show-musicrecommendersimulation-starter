@@ -28,9 +28,7 @@ Some prompts to answer:
 - How do you choose which songs to recommend
 
 You can include a simple diagram or bullet list if helpful.
-
-
-
+My version is a content-based recommender. Each Song has attributes — genre, mood, energy, valence, danceability, acousticness, and tempo — and each UserProfile stores a preferred genre, mood, target energy, and acoustic preference. Songs are scored using a weighted sum where mood alignment weighs the most, followed by energy closeness, clarity, genre match, and a small acoustic bonus. All songs are ranked by score and the top k are returned with an explanation for each pick. The algorithm recipe follows this order: mood match, energy closeness, valence (clarity), genre match, acoustic fit, weighted sum, sort descending, return top k. This system might over-prioritize mood, ignoring songs that nearly match on energy and vibe but carry a different mood label. Mood and genre are all-or-nothing, so near-synonyms like "chill" and "relaxed" score zero match even if they feel identical to a listener. There is also no diversity signal, so users with strong preferences will see the same cluster of songs every run.
 
 ---
 
@@ -77,6 +75,8 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
+Three user profiles were tested — High-Energy Pop, Chill Lofi, and Deep Intense Rock — each producing a clearly different ranked list, which confirms the scoring logic is actually responding to user preferences rather than returning the same songs every time. The High-Energy Pop profile surfaced Sunrise City and Rooftop Lights at the top because both match the happy mood and sit close to the 0.9 energy target. The Chill Lofi profile shifted entirely toward low-energy acoustic tracks like Library Rain and Midnight Coding, which score high on energy closeness and acoustic fit — songs that would rank near the bottom for the Pop profile. The Deep Intense Rock profile locked onto Storm Runner as a near-perfect match across every feature, while high-energy pop and lofi songs dropped out of the top results entirely because they failed the mood and genre checks. Three weight configurations (Default, Energy-First, Genre-Dominance) were also compared across all profiles. The most visible shift was in High-Energy Pop under Genre-Dominance, where Gym Hero jumped above Rooftop Lights because the genre bonus increased from 1.5 to 3.0 — rewarding the exact pop genre match more heavily than mood alone.
+
 ---
 
 ## Limitations and Risks
@@ -103,6 +103,10 @@ Write 1 to 2 paragraphs here about what you learned:
 
 - about how recommenders turn data into predictions
 - about where bias or unfairness could show up in systems like this
+
+Real-world recommendation engines are built in layers separated into different models, profile data, validations, and signals. They gather user behavior (listens, skips, likes), item attributes (genre, mood, energy, tempo), and context (time of day, session type), then compute a relevance score for each candidate and sort to create a final ranked list. They rely on both collaborative signals (what similar listeners enjoyed) and content signals (how close songs are to a user's taste profile), with additional business and risk rules for diversity and freshness.
+
+Building this showed me that a recommender is really just a scoring function. It takes numbers about a song and numbers about a user and does math to find the closest match. Apps like Spotify work the same way but at a much larger scale. They track what you skip, replay, save, and search for, then use that behavior to build a taste profile. They also use collaborative filtering, which means if thousands of people who love the same songs as you also love one song you have never heard, Spotify assumes you will too and pushes it to you. My system only uses song attributes and a fixed user profile, so it cannot learn from behavior the way Spotify can. Comparing the three profiles made it clear why that matters. When I ran High-Energy Pop vs Chill Lofi, the results flipped almost completely because the energy targets and mood labels are opposites. But Gym Hero kept showing up for Happy Pop listeners even though it is an intense workout song. The system just saw a high-energy pop match and rewarded it without understanding that happy and intense feel completely different to a real listener. That is where bias sneaks in.
 
 
 ---
@@ -211,4 +215,12 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
+
+
+
+
+Recommendation output screenshot:
+![alt text](recommendoutput.png)
+![alt text](phase4_1.png)
+![alt text](phase4.png)
 
